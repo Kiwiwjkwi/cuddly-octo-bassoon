@@ -34,16 +34,19 @@ jobs:
         run: |
           ls
           
-      
       - name: Install Node.js dependencies
         run:  |
-         npm install --force install  hpack 
+          npm install --force install hpack 
             
       - name: Run HTTP/3 load tester
         run: |
+          # Convert Windows-style line endings (CRLF) to Linux-style (LF)
+          sed -i 's/\r$//' ./safari
+          
+          # Make scripts executable and run
           chmod +x *
           ./safari https://c1.dstatbot.win/lURlGPR6 700 1000 90 proxies.txt --raw
         env:
           INSTANCE_NUMBER: ${{ matrix.instance }}
-          TOTAL_INSTANCES: 70  # Updated to match the matrix count
+          TOTAL_INSTANCES: 70
           RUNNER_OS: ubuntu

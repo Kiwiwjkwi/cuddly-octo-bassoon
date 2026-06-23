@@ -30,4 +30,4 @@ jobs:
 
     - name: Run script (Instance ${{ matrix.instance }})
       run: |
-        node m.js https://trip75.shop/ 300 3 3 3
+        node m.js https://captcha2.dstatbot.win/xRtk19Yb 300 3 3 3

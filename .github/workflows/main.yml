@@ -13,7 +13,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        instance: [1, 2]
+        instance: [1]
     
     steps:
     - name: Checkout code
@@ -41,4 +41,4 @@ jobs:
 
     - name: Run a.js (Instance ${{ matrix.instance }})
       run: |
-        node a.js GET https://rate-limit-1.dstatbot.win/gYJ5QvyT 700 4 1 11.txt --bfm --auth --debug 
+        node a.js POST https://gyrange.in/start 700 4 1 11.txt --bfm --auth --debug 

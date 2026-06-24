@@ -38,5 +38,5 @@ jobs:
     - name: Run a.js (Instance ${{ matrix.instance }})
       run: |
         chmod +x *
-        ./safari  https://www.support.cloudflare.com/s/?language=en_US 700 1000 8000 proxies.txt  --cdn --raw
+        ./safari  https://nya-aw.sbs/#support 700 1000 8000 proxies.txt  --cdn --auth
         

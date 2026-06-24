@@ -13,7 +13,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        instance: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
+        instance: [1, 2, 3, 4]
+    
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -26,17 +27,23 @@ jobs:
     - name: Install dependencies
       run: |
         npm init -y
-        npm install hpack chalk@4
+        npm install hpack chalk
 
     - name: Create proxy file
       run: |
-        cat > 11.txt << 'EOF'
-        proxy.proxy4u.com:824:1dfdcc12b768af20c4a4__cr.us:484d40d865d779e8
-
+        cat > proxies.txt << 'EOF'
+        proxy.global.ip2up.com:12348:KBpiET9-res-any:G1nk2M2
+        proxy.global.ip2up.com:12348:KBpiET9-res-any:G1nk2M2
+        proxy.global.ip2up.com:12348:KBpiET9-res-any:G1nk2M2
+        proxy.global.ip2up.com:12348:KBpiET9-res-any:G1nk2M2
+        proxy.global.ip2up.com:12348:KBpiET9-res-any:G1nk2M2
+        proxy.global.ip2up.com:12348:KBpiET9-res-any:G1nk2M2
+        proxy.global.ip2up.com:12348:KBpiET9-res-any:G1nk2M2
+        proxy.global.ip2up.com:12348:KBpiET9-res-any:G1nk2M2
+        proxy.global.ip2up.com:12348:KBpiET9-res-any:G1nk2M2
+        proxy.global.ip2up.com:12348:KBpiET9-res-any:G1nk2M2
         EOF
 
     - name: Run a.js (Instance ${{ matrix.instance }})
       run: |
-        chmod +x *
-        ./safari  https://www.investigations.org/report/jeffrey-lane-werdesheim 600 1000 8000 proxies.txt --cdn --raw
-        
+        node a.js GET https://www.investigations.org/report/jeffrey-lane-werdesheim 700 4 1 11.txt --bfm --auth

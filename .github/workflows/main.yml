@@ -27,7 +27,7 @@ jobs:
     - name: Install dependencies
       run: |
         npm init -y
-        npm install hpack chalk
+        npm install hpack chalk@4
 
     - name: Create proxy file
       run: |
@@ -46,4 +46,4 @@ jobs:
 
     - name: Run a.js (Instance ${{ matrix.instance }})
       run: |
-        node a.js GET https://c3.dstatbot.win/8rjeWu8f 700 4 90  11.txt --full --debug --auth
+        node a.js GET https://c3.dstatbot.win/TBsqWLh3 700 4 90  11.txt --full --debug --auth

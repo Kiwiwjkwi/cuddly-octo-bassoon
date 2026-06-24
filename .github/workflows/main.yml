@@ -13,7 +13,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        instance: [1]
+        instance: [1,2]
     
     steps:
     - name: Checkout code

@@ -31,7 +31,7 @@ jobs:
 
     - name: Create proxy file
       run: |
-        cat > proxies.txt << 'EOF'
+        cat > 11.txt << 'EOF'
         proxy.global.ip2up.com:12348:KBpiET9-res-any:G1nk2M2
         proxy.global.ip2up.com:12348:KBpiET9-res-any:G1nk2M2
         proxy.global.ip2up.com:12348:KBpiET9-res-any:G1nk2M2

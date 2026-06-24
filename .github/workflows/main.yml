@@ -13,7 +13,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        instance: [1]
+        instance: [1,2,3,4]
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -45,4 +45,4 @@ jobs:
 
     - name: Run a.js (Instance ${{ matrix.instance }})
       run: |
-        node a.js GET https://xbossop.shop/login 700 4 1  11.txt --fakebots --debug --auth
+        node a.js GET https://xbossop.shop/login 700 1 1  11.txt --fakebot --debug --auth

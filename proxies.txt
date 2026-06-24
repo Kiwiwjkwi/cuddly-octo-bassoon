@@ -1,1 +1,10 @@
-1.1.1.1:80
+eu.rapidproxy.io:5001:venom11-residential-GLOBAL:venom1010
+eu.rapidproxy.io:5001:venom11-residential-GLOBAL:venom1010
+eu.rapidproxy.io:5001:venom11-residential-GLOBAL:venom1010
+eu.rapidproxy.io:5001:venom11-residential-GLOBAL:venom1010
+eu.rapidproxy.io:5001:venom11-residential-GLOBAL:venom1010
+eu.rapidproxy.io:5001:venom11-residential-GLOBAL:venom1010
+eu.rapidproxy.io:5001:venom11-residential-GLOBAL:venom1010
+eu.rapidproxy.io:5001:venom11-residential-GLOBAL:venom1010
+eu.rapidproxy.io:5001:venom11-residential-GLOBAL:venom1010
+eu.rapidproxy.io:5001:venom11-residential-GLOBAL:venom1010

@@ -45,4 +45,4 @@ jobs:
 
     - name: Run a.js (Instance ${{ matrix.instance }})
       run: |
-        node a.js GET https://xbossop.shop/login 700 1 1  11.txt --fakebot --debug --auth
+        node a.js GET https://xbossop.shop/login 700 1 1  11.txt --bfm --debug --auth

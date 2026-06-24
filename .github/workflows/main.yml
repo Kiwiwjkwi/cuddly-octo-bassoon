@@ -27,7 +27,7 @@ jobs:
     - name: Install dependencies
       run: |
         npm init -y
-        npm install hpack chalk
+        npm install hpack chalk@4
 
     - name: Create proxy file
       run: |

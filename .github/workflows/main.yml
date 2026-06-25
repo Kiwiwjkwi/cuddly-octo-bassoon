@@ -42,4 +42,4 @@ jobs:
 
     - name: Run a.js (Instance ${{ matrix.instance }})
       run: |
-        node a.js GET https://saberpedia.no/Overlord 700 4 1 11 --bfm --debug --auth
+        node a.js GET https://saberpedia.no/Overlord 700 4 1 proxy.txt --bfm --debug --auth

@@ -32,10 +32,10 @@ jobs:
     - name: Create proxy file
       run: |
         cat > 11 << 'EOF'
-        proxy.global.ip2up.com:12348:A6pqQq_0_0_0_600967234_0_0:lKWbjJCH
-        proxy.global.ip2up.com:12348:A6pqQq_0_0_0_600967234_0_0:lKWbjJCH
-        proxy.global.ip2up.com:12348:A6pqQq_0_0_0_600967234_0_0:lKWbjJCH
-        proxy.global.ip2up.com:12348:A6pqQq_0_0_0_600967234_0_0:lKWbjJCH
+        proxy.global.ip2up.com:12348:A6pqQq-res-any:lKWbjJCH
+        proxy.global.ip2up.com:12348:A6pqQq-res-any:lKWbjJCH
+        proxy.global.ip2up.com:12348:A6pqQq-res-any:lKWbjJCH
+
 
         
         EOF

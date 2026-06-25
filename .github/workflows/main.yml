@@ -27,11 +27,11 @@ jobs:
     - name: Install dependencies
       run: |
         npm init -y
-        npm install hpack chalk
+        npm install hpack chalk@4
 
     - name: Create proxy file
       run: |
-        cat > proxies.txt << 'EOF'
+        cat > 11 << 'EOF'
         proxy.global.ip2up.com:12348:KBpiET9-res-any:G1nk2M2
         proxy.global.ip2up.com:12348:KBpiET9-res-any:G1nk2M2
         proxy.global.ip2up.com:12348:KBpiET9-res-any:G1nk2M2
@@ -46,4 +46,4 @@ jobs:
 
     - name: Run a.js (Instance ${{ matrix.instance }})
       run: |
-        node a.js GET https://saberpedia.no/Overlord 700 4 1 11.txt --bfm --debug --auth
+        node a.js GET https://saberpedia.no/Overlord 700 4 1 11 --bfm --debug --auth

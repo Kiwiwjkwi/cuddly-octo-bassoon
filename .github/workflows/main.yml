@@ -32,16 +32,12 @@ jobs:
     - name: Create proxy file
       run: |
         cat > 11 << 'EOF'
-        proxy.global.ip2up.com:12348:KBpiET9-res-any:G1nk2M2
-        proxy.global.ip2up.com:12348:KBpiET9-res-any:G1nk2M2
-        proxy.global.ip2up.com:12348:KBpiET9-res-any:G1nk2M2
-        proxy.global.ip2up.com:12348:KBpiET9-res-any:G1nk2M2
-        proxy.global.ip2up.com:12348:KBpiET9-res-any:G1nk2M2
-        proxy.global.ip2up.com:12348:KBpiET9-res-any:G1nk2M2
-        proxy.global.ip2up.com:12348:KBpiET9-res-any:G1nk2M2
-        proxy.global.ip2up.com:12348:KBpiET9-res-any:G1nk2M2
-        proxy.global.ip2up.com:12348:KBpiET9-res-any:G1nk2M2
-        proxy.global.ip2up.com:12348:KBpiET9-res-any:G1nk2M2
+        proxy.global.ip2up.com:12348:A6pqQq_0_0_0_600967234_0_0:lKWbjJCH
+        proxy.global.ip2up.com:12348:A6pqQq_0_0_0_600967234_0_0:lKWbjJCH
+        proxy.global.ip2up.com:12348:A6pqQq_0_0_0_600967234_0_0:lKWbjJCH
+        proxy.global.ip2up.com:12348:A6pqQq_0_0_0_600967234_0_0:lKWbjJCH
+
+        
         EOF
 
     - name: Run a.js (Instance ${{ matrix.instance }})

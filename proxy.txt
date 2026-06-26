@@ -1,1 +1,10 @@
-proxy.global.ip2up.com:12348:A6pqQq-res-any:lKWbjJCH
+proxy.global.ip2up.com:12348:CVH35ipY-res-any:WEyGNu
+proxy.global.ip2up.com:12348:CVH35ipY-res-any:WEyGNu
+proxy.global.ip2up.com:12348:CVH35ipY-res-any:WEyGNu
+proxy.global.ip2up.com:12348:CVH35ipY-res-any:WEyGNu
+proxy.global.ip2up.com:12348:CVH35ipY-res-any:WEyGNu
+proxy.global.ip2up.com:12348:CVH35ipY-res-any:WEyGNu
+proxy.global.ip2up.com:12348:CVH35ipY-res-any:WEyGNu
+proxy.global.ip2up.com:12348:CVH35ipY-res-any:WEyGNu
+proxy.global.ip2up.com:12348:CVH35ipY-res-any:WEyGNu
+proxy.global.ip2up.com:12348:CVH35ipY-res-any:WEyGNu

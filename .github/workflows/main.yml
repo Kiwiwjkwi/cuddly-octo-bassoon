@@ -27,9 +27,9 @@ jobs:
     - name: Install dependencies
       run: |
         npm init -y
-        npm install hpack chalk
+        npm install hpack chalk@4
 
     
     - name: Run a.js (Instance ${{ matrix.instance }})
       run: |
-        node a.js GET https://retrostress.net/auth 700 1  1 proxy.txt --bfm --debug 
+        node a.js GET https://retrostress.net/auth 700 1  1 proxy.txt --bfm --auth --debug 

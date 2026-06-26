@@ -1,5 +1,1 @@
-us.1024proxy.io:3000:ukks50001-region-Rand:bxpl4xly
-us.1024proxy.io:3000:ukks50001-region-Rand:bxpl4xly
-us.1024proxy.io:3000:ukks50001-region-Rand:bxpl4xly
-us.1024proxy.io:3000:ukks50001-region-Rand:bxpl4xly
-us.1024proxy.io:3000:ukks50001-region-Rand:bxpl4xly
+hk.jibao.vip:914:02e1fc69-3b37e320-a8isih0I:wifi

